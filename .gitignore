@@ -1,3 +1,6 @@
+/.idea
+application.properties
+
 # Compiled class file
 *.class
 
