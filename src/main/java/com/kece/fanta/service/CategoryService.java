@@ -1,2 +1,7 @@
-package com.kece.fanta.service;public interface CategoryService {
+package com.kece.fanta.service;
+
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.kece.fanta.entity.Category;
+
+public interface CategoryService extends IService<Category> {
 }
