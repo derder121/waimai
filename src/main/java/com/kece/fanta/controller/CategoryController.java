@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
+import java.util.List;
 
 @RestController
 @RequestMapping("/category")
@@ -52,5 +53,16 @@ public class CategoryController {
         categoryService.updateById(category);
 
         return R.success("修改分类信息成功");
+    }
+
+    @GetMapping("/list")
+    public R<List<Category>> list(Category category){
+        LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();  //条件构造器
+        // Type不为空并且与category对应的type
+        queryWrapper.eq(category.getType()!=null,Category::getType,category.getType());
+        queryWrapper.orderByAsc(Category::getSort).orderByDesc(Category::getUpdateTime); //先升序再降序
+
+        List<Category> list = categoryService.list(queryWrapper);
+        return R.success(list);
     }
 }
