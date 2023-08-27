@@ -4,6 +4,12 @@ import lombok.Data;
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * 通用返回结果，服务端相应的数据最终都会封装成此对象
+ * @param <T>
+ */
+
 @Data
 public class R<T> {
 
