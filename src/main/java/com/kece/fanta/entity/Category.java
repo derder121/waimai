@@ -1,10 +1,13 @@
 package com.kece.fanta.entity;
 
+
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,8 +23,8 @@ public class Category implements Serializable {
 
     private static final Long serialVersionUID = 1L;
 
-    @TableId(value = "id",type = IdType.AUTO)
-    private Integer id;
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long id;
 
 
     //类型 1 菜品分类 2 套餐分类

@@ -36,12 +36,21 @@ public class CategoryController {
     }
 
     @DeleteMapping  // 根据id删除分类
-    public R<String> delete(@RequestParam("id") Integer id){
+    public R<String> delete(@RequestParam("id") Long id){
         System.out.println(id);
         log.info("删除分类，id为{}",id);
 
 
-        categoryService.removeById(id);
+        categoryService.remove(id);
         return R.success("分类信息删除成功");
+    }
+
+    @PutMapping // 根据id修改分类信息
+    public R<String> update(@RequestBody Category category){
+        log.info("修改分类信息：{}",category);
+
+        categoryService.updateById(category);
+
+        return R.success("修改分类信息成功");
     }
 }

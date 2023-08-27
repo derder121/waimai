@@ -1,2 +1,7 @@
-package com.kece.fanta.service;public interface DishService {
+package com.kece.fanta.service;
+
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.kece.fanta.entity.Dish;
+
+public interface DishService extends IService<Dish> {
 }
