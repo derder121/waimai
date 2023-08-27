@@ -1,5 +1,7 @@
 /.idea
+/target
 application.properties
+LICENSE
 
 # Compiled class file
 *.class
