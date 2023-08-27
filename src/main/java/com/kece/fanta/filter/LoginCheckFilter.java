@@ -16,7 +16,7 @@ import java.io.IOException;
  * 检查用户是否已经完成登录
  */
 @Slf4j
-@WebFilter(filterName = "loginCheckFilter", urlPatterns = "/*")
+//@WebFilter(filterName = "loginCheckFilter", urlPatterns = "/*")
 public class LoginCheckFilter implements Filter {
     //路径匹配器，支持通配符
     public static final AntPathMatcher PATH_MATCHER = new AntPathMatcher();
