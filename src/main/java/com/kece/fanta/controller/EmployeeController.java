@@ -3,6 +3,7 @@ package com.kece.fanta.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.kece.fanta.common.BaseContext;
 import com.kece.fanta.common.R;
 import com.kece.fanta.entity.Employee;
 import com.kece.fanta.service.EmployeeService;
@@ -63,6 +64,7 @@ public class EmployeeController {
 
         //6、登录成功，将员工id存入Session并返回登录成功结果
         request.getSession().setAttribute("employee", emp.getId());
+        BaseContext.setCurrentId(emp.getId());
         return R.success(emp);
     }
 

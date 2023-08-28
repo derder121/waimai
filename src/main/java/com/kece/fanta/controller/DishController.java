@@ -3,11 +3,13 @@ package com.kece.fanta.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.kece.fanta.common.CustomException;
 import com.kece.fanta.common.R;
 import com.kece.fanta.dto.DishDto;
 import com.kece.fanta.entity.Category;
 import com.kece.fanta.entity.Dish;
 import com.kece.fanta.entity.DishFlavor;
+import com.kece.fanta.entity.Setmeal;
 import com.kece.fanta.service.CategoryService;
 import com.kece.fanta.service.DishFlavorService;
 import com.kece.fanta.service.DishService;
@@ -72,8 +74,6 @@ public class DishController {
                 // 如菜品分类不存在，则显示“无”
                 dishDto.setCategoryName("无");
             }
-
-
             return dishDto;
         }).toList();    //转换成list集合
 
@@ -99,24 +99,56 @@ public class DishController {
 
     @PostMapping("/status/{status}")
     public R<String> updateStatus(@PathVariable("status") Integer status,@RequestParam("ids") List<Long> ids){
+        //  获取要修改的套餐菜品数据
         LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.in(Dish::getId,ids);
         List<Dish> dishs = dishService.listByIds(ids);
+
+        // 对其逐一修改status值
         for (Dish dish : dishs) {
             dish.setStatus(status);
         }
+
+        // 删除之前的套餐菜品数据
         dishService.removeByIds(ids);
+        // 添加新构建的setmeal数据
         dishService.saveBatch(dishs);
         return R.success("修改成功");
     }
 
     @DeleteMapping
     public R<String> deleteDish(@RequestParam("ids") List<Long> ids){
+        // 查询套餐的状态，确认是否可以删除
+        LambdaQueryWrapper<Dish> queryWrapper1 = new LambdaQueryWrapper<>();
+        queryWrapper1.in(Dish::getId,ids);
+        queryWrapper1.eq(Dish::getStatus,1);
+        int count = dishService.count(queryWrapper1);
+        if (count > 0){
+            throw new CustomException("该菜品售卖中，无法删除");
+        }
+
         LambdaQueryWrapper<DishFlavor> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.in(DishFlavor::getDishId,ids);
         dishFlavorService.remove(queryWrapper);
         dishService.removeByIds(ids);
         return R.success("删除成功");
     }
+
+
+    //根据添加查询相应菜品数据，用于套餐添加
+    @GetMapping("/list")
+    // dish内部只保存了CategoryId，用于查询对于菜品分类下的菜品
+    public R<List<Dish>> list(Dish dish){
+        LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(dish.getCategoryId()!=null,Dish::getCategoryId,dish.getCategoryId());
+        queryWrapper.eq(Dish::getStatus,1);  //查询起售状态的菜品
+        // 添加排序条件
+        queryWrapper.orderByDesc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
+
+        List<Dish> list = dishService.list(queryWrapper);
+        return R.success(list);
+    }
+
+
 
 }
