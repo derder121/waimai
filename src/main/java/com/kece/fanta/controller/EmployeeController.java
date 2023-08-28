@@ -3,6 +3,7 @@ package com.kece.fanta.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.kece.fanta.common.BaseContext;
 import com.kece.fanta.common.R;
 import com.kece.fanta.entity.Employee;
 import com.kece.fanta.service.EmployeeService;
@@ -63,6 +64,7 @@ public class EmployeeController {
 
         //6、登录成功，将员工id存入Session并返回登录成功结果
         request.getSession().setAttribute("employee", emp.getId());
+        BaseContext.setCurrentId(emp.getId());
         return R.success(emp);
     }
 
@@ -93,14 +95,14 @@ public class EmployeeController {
         //设置初始密码123456，需要md5加密处理
         employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
 
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
+        //employee.setCreateTime(LocalDateTime.now());
+        //employee.setUpdateTime(LocalDateTime.now());
 
         //获得当前用户登录的id
         Long empId = (Long) request.getSession().getAttribute("employee");
 
-        employee.setCreateUser(empId);
-        employee.setUpdateUser(empId);
+        //employee.setCreateUser(empId);
+        //employee.setUpdateUser(empId);
 
         employeeService.save(employee);
 
@@ -147,8 +149,8 @@ public class EmployeeController {
         log.info(employee.toString());
 
         Long empId = (Long) request.getSession().getAttribute("employee");
-        employee.setUpdateTime(LocalDateTime.now());
-        employee.setUpdateUser(empId);
+        //employee.setUpdateTime(LocalDateTime.now());
+        //employee.setUpdateUser(empId);
         employeeService.updateById(employee);
         return R.success("员工信息修改成功");
     }

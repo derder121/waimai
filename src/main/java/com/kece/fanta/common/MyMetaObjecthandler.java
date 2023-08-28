@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
-// 源数据对象处理器
+// 元数据对象处理器
 @Component
 @Slf4j
 public class MyMetaObjecthandler implements MetaObjectHandler {
