@@ -20,12 +20,10 @@ public class Setmeal implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
 
     //分类id
-    @JsonSerialize(using = ToStringSerializer.class)
     private Long categoryId;
 
 
