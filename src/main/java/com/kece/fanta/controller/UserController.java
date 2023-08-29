@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ import java.util.Map;
 public class UserController {
     @Autowired
     private UserService userService;
+
     /**
      * 发送邮箱验证码
      *
@@ -55,26 +57,46 @@ public class UserController {
         return R.error("验证码发送失败，请重新输入!");
     }
 
+    /**
+     * 用户登录
+     *
+     * @param map
+     * @param session
+     * @return
+     */
     @PostMapping("/login")
     public R<User> login(@RequestBody Map map, HttpSession session) {
         log.info(map.toString());
         String phone = map.get("phone").toString();
         String code = map.get("code").toString();
         String attribute = session.getAttribute(phone).toString();
-        if (attribute != null && attribute.equals(code)){
+        if (attribute != null && attribute.equals(code)) {
             LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(User::getPhone,phone);
+            queryWrapper.eq(User::getPhone, phone);
             User user = userService.getOne(queryWrapper);
-            if (user == null){
+            if (user == null) {
                 user = new User();
                 user.setPhone(phone);
                 user.setStatus(1);
                 userService.save(user);
             }
+            session.setAttribute("user", user.getId());
             return R.success(user);
         }
         return R.error("登录失败");
 
     }
 
+    /**
+     * 用户退出
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("/loginout")
+    public R<String> loginout(HttpServletRequest request) {
+        //清理Session中保存的当地登录用户的id
+        request.getSession().removeAttribute("user");
+        return R.success("退出成功");
+    }
 }

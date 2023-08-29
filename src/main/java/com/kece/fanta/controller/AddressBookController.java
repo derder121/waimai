@@ -31,6 +31,14 @@ public class AddressBookController {
     @PostMapping
     public R<AddressBook> save(@RequestBody AddressBook addressBook) {
         addressBook.setUserId(BaseContext.getCurrentId());
+
+        //判断是否是新建的第一个地址，是则将该地址设置为默认地址
+        LambdaQueryWrapper<AddressBook> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(AddressBook::getUserId, BaseContext.getCurrentId());
+        if (addressBookService.count(wrapper) == 0) {
+            addressBook.setIsDefault(1);
+        }
+
         log.info("addressBook:{}", addressBook);
         addressBookService.save(addressBook);
         return R.success(addressBook);
