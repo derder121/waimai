@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kece.fanta.common.R;
 import com.kece.fanta.dto.SetmealDto;
 import com.kece.fanta.entity.Category;
-import com.kece.fanta.entity.Dish;
 import com.kece.fanta.entity.Setmeal;
+import com.kece.fanta.entity.SetmealDish;
 import com.kece.fanta.service.CategoryService;
 import com.kece.fanta.service.SetmealDishService;
 import com.kece.fanta.service.SetmealService;
@@ -85,8 +85,6 @@ public class SetmealController {
     @PostMapping("/status/{status}")
     public R<String> updateStatus(@PathVariable("status") Integer status, @RequestParam("ids") List<Long> ids) {
         //  获取要修改的套餐菜品数据
-        LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.in(Setmeal::getId, ids);
         List<Setmeal> setmeals = setmealService.listByIds(ids);
 
         // 对其逐一修改status值
@@ -119,5 +117,32 @@ public class SetmealController {
         List<Setmeal> list = setmealService.list(queryWrapper);
 
         return R.success(list);
+    }
+
+    @GetMapping("/{setmealid}")
+    public R<SetmealDto> check(@PathVariable("setmealid") Long setmealid){
+        log.info(setmealid.toString());
+        // 根据id获取套餐信息
+        Setmeal setmeal = setmealService.getById(setmealid);
+
+        // 根据id获取套餐菜品信息
+        LambdaQueryWrapper<SetmealDish> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SetmealDish::getSetmealId,setmealid);
+        List<SetmealDish> list = setmealDishService.list(queryWrapper);
+
+        // 构造一个容器
+        SetmealDto setmealDto = new SetmealDto();
+
+        // 将套餐信息和套餐菜品信息全部装入容器中
+        BeanUtils.copyProperties(setmeal,setmealDto);
+        setmealDto.setSetmealDishes(list);
+
+        return R.success(setmealDto);
+    }
+
+    @PutMapping
+    public R<String> update(@RequestBody SetmealDto setmealDto){
+        setmealService.updateWithDish(setmealDto);
+        return R.success("修改成功");
     }
 }

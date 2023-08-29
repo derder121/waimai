@@ -59,4 +59,25 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         setmealDishService.remove(queryWrapper1);
 
     }
+
+    @Override
+    public void updateWithDish(SetmealDto setmealDto) {
+        this.updateById(setmealDto);    // 先保存套餐基本信息
+
+        // 移除套餐关联菜品信息
+        LambdaQueryWrapper<SetmealDish> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SetmealDish::getSetmealId,setmealDto.getId());
+        setmealDishService.remove(queryWrapper);
+
+        // 获取用户发来的套餐菜品信息
+        List<SetmealDish> setmealDishes = setmealDto.getSetmealDishes();
+        // 将用户发来的套餐菜品信息补全
+        setmealDishes = setmealDishes.stream().map((item)->{
+            item.setSetmealId(setmealDto.getId());
+            return item;
+        }).toList();
+
+        // 保存套餐菜品信息
+        setmealDishService.saveBatch(setmealDishes);
+    }
 }
