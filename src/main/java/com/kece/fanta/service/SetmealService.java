@@ -11,4 +11,6 @@ public interface SetmealService extends IService<Setmeal> {
 
     //删除套餐及套餐关联数据
     public void removeWithDish(List<Long> ids);
+
+    public void updateWithDish(SetmealDto setmealDto);
 }
