@@ -101,6 +101,11 @@ public class SetmealController {
         return R.success("修改成功");
     }
 
+    /**
+     * 套餐分类查询
+     * @param setmeal
+     * @return
+     */
     @GetMapping("/list")
     public R<List<Setmeal>> list(Setmeal setmeal) {
         LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();

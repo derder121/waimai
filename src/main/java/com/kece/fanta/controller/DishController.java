@@ -163,6 +163,7 @@ public class DishController {
         //SQL:select * from dish where id = ? and status = ? order by sort desc,update_time desc
         List<Dish> list = dishService.list(queryWrapper);
 
+        //增加DishDto的flavors属性
         List<DishDto> dishDtoList = list.stream().map((item) -> {      // 遍历list集合
             DishDto dishDto = new DishDto();
             // 1、、先把item中的属性赋值给dishDto
