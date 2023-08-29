@@ -85,8 +85,6 @@ public class SetmealController {
     @PostMapping("/status/{status}")
     public R<String> updateStatus(@PathVariable("status") Integer status, @RequestParam("ids") List<Long> ids) {
         //  获取要修改的套餐菜品数据
-        LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.in(Setmeal::getId, ids);
         List<Setmeal> setmeals = setmealService.listByIds(ids);
 
         // 对其逐一修改status值

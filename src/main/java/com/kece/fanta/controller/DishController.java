@@ -6,13 +6,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kece.fanta.common.CustomException;
 import com.kece.fanta.common.R;
 import com.kece.fanta.dto.DishDto;
-import com.kece.fanta.entity.Category;
-import com.kece.fanta.entity.Dish;
-import com.kece.fanta.entity.DishFlavor;
-import com.kece.fanta.entity.Setmeal;
-import com.kece.fanta.service.CategoryService;
-import com.kece.fanta.service.DishFlavorService;
-import com.kece.fanta.service.DishService;
+import com.kece.fanta.entity.*;
+import com.kece.fanta.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +27,10 @@ public class DishController {
     private DishFlavorService dishFlavorService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private SetmealDishService setmealDishService;
+    @Autowired
+    private SetmealService setmealService;
 
 
     @PostMapping
@@ -100,16 +99,29 @@ public class DishController {
     @PostMapping("/status/{status}")
     public R<String> updateStatus(@PathVariable("status") Integer status, @RequestParam("ids") List<Long> ids) {
         //  获取要修改的套餐菜品数据
-        LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.in(Dish::getId, ids);
+//
         List<Dish> dishs = dishService.listByIds(ids);
+        LambdaQueryWrapper<SetmealDish> queryWrapper1 = new LambdaQueryWrapper<>();
+        queryWrapper1.in(SetmealDish::getDishId,ids);
+        List<SetmealDish> setmealDishes = setmealDishService.list(queryWrapper1);
+        List<Long> Setmealid = setmealDishes.stream().map((item)->{
+            Long setmealId = item.getSetmealId();
+            return setmealId;
+        }).toList();
+        List<Setmeal> setmeals = setmealService.listByIds(Setmealid);
 
+        for (Setmeal setmeal : setmeals) {
+            setmeal.setStatus(status);
+        }
         // 对其逐一修改status值
         for (Dish dish : dishs) {
             dish.setStatus(status);
         }
 
-        // 删除之前的套餐菜品数据
+        setmealService.removeByIds(Setmealid);
+        setmealService.saveBatch(setmeals);
+
+        // 删除之前的菜品数据
         dishService.removeByIds(ids);
         // 添加新构建的setmeal数据
         dishService.saveBatch(dishs);
