@@ -16,15 +16,21 @@ public class MyMetaObjecthandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         log.info("公共字段自动填充[insert]");
         log.info(metaObject.toString());
+
+        Long currentId = BaseContext.getCurrentId();
+        log.info("{}",currentId);
         if (metaObject.hasSetter("createTime")) {
             metaObject.setValue("createTime", LocalDateTime.now());
         }
+
         if (metaObject.hasSetter("updateTime")) {
             metaObject.setValue("updateTime", LocalDateTime.now());
         }
+
         if (metaObject.hasSetter("createUser")) {
             metaObject.setValue("createUser", BaseContext.getCurrentId());
         }
+
         if (metaObject.hasSetter("updateUser")) {
             metaObject.setValue("updateUser", BaseContext.getCurrentId());
         }
@@ -36,9 +42,11 @@ public class MyMetaObjecthandler implements MetaObjectHandler {
     public void updateFill(MetaObject metaObject) {
         log.info("公共自动填充[update]");
         log.info(metaObject.toString());
+
         if (metaObject.hasSetter("updateTime")) {
             metaObject.setValue("updateTime", LocalDateTime.now());
         }
+
         if (metaObject.hasSetter("updateUser")) {
             metaObject.setValue("updateUser", BaseContext.getCurrentId());
         }

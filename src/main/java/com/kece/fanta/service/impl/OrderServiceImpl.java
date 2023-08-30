@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kece.fanta.common.BaseContext;
 import com.kece.fanta.common.CustomException;
 import com.kece.fanta.entity.*;
-import com.kece.fanta.mapper.AddressBookMapper;
 import com.kece.fanta.mapper.OrderMapper;
 import com.kece.fanta.service.*;
 import org.springframework.beans.factory.annotation.Autowired;

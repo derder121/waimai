@@ -4,13 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kece.fanta.common.BaseContext;
 import com.kece.fanta.common.R;
-import com.kece.fanta.entity.Employee;
 import com.kece.fanta.entity.Orders;
 import com.kece.fanta.service.OrderDetailService;
 import com.kece.fanta.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -20,6 +18,9 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private OrderDetailService orderDetailService;
 
     @PostMapping("/submit")
     public R<String> submit(@RequestBody Orders orders) {
@@ -45,6 +46,20 @@ public class OrderController {
 
         //执行查询
         orderService.page(pageInfo, queryWrapper);
+
+        return R.success(pageInfo);
+    }
+
+    @GetMapping("/page")
+    public R<Page> page(int page, int pageSize) {
+
+        log.info("page = {},pageSize = {}", page, pageSize);
+
+        //构造分页构造器
+        Page pageInfo = new Page(page, pageSize);
+
+        //执行查询
+        orderDetailService.page(pageInfo);
 
         return R.success(pageInfo);
     }

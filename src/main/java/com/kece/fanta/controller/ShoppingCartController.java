@@ -4,13 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.kece.fanta.common.BaseContext;
 import com.kece.fanta.common.R;
 import com.kece.fanta.entity.ShoppingCart;
-import com.kece.fanta.service.AddressBookService;
 import com.kece.fanta.service.ShoppingCartService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
 
 @Slf4j
 @RestController
